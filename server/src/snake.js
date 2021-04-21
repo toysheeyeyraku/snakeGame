@@ -1,4 +1,8 @@
  class Snake {
+
+    constructor(){
+        this.color = this.getRandomColor();
+    }
     direction = {
         x: 1,
         y: 0
@@ -20,6 +24,15 @@
         })
         return val;
     }
+
+    getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
 }
 
 module.exports = {Snake}

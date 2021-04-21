@@ -3,27 +3,34 @@ import { Snake } from './snake.js'
 import { Game } from './game.js'
 Array.prototype.insert = insert;
 
-let game = new Game(new Snake(), 20, 10);
+
 document.addEventListener('keypress', (event) => {
     const keyName = event.key;
     game.controllerPressed(keyName)
 
 });
-setInterval(() => {
-    game.tick();
-}, 100)
-
-/*const ws = new WebSocket("ws://localhost:8072");
+var game ;
+var color;
+const ws = new WebSocket("ws://localhost:8072");
 ws.addEventListener("message", ({ data }) => {
-    console.log(JSON.stringify(data) + 'receivedData')
-
+    let d = JSON.parse(data);
+    if (d.command === 'initialize'){
+        game = new Game(d.width, d.height, ws);
+    }
+    if (d.command === 'color'){
+        color = d.color;
+    }
+    if (d.command ==='render'){
+        console.log(JSON.stringify(d.data))
+        game.drawScene(d.data)
+    }
 })
 ws.addEventListener("close", () => {
-    console.log('close');
+    
 })
 ws.addEventListener("open", () => {
-    console.log('connected');
+    
 
-    ws.send('loler');
+   
 
-})*/
+})

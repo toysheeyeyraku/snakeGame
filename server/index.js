@@ -1,18 +1,30 @@
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({port : 8072});
+const {Game} = require('./src/game')
+function insert(index, item) {
+    this.splice(index, 0, item);
+}
+Array.prototype.insert = insert;
+var game = new Game(30,30);
 
+setInterval(() =>{
+    game.tick();
+}, 1000);
 function initializeConnection(ws){
     ws.on("close", () => {
-        console.log("Connection closed");
+        game.deleteClient(ws);
     });
+    game.addClinet(ws);
     ws.on('message', function incoming(data) {
-        console.log(data);
-        ws.send(data +'lol')
-      });
+        let d = JSON.parse(data);
+        if (d.command === 'pressed'){
+            game.controllerPressed(ws, d.key);
+        }
+    });
 }
 
 wss.on("connection", ws => {
-    console.log('new connection')
+    
     initializeConnection(ws);
    
 } )

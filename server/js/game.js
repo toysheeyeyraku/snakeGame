@@ -1,14 +1,13 @@
 import {shuffle} from './utils.js';
-import {Zerno} from './zerno.js';
+
 export class Game {
 
-    constructor(snake, width, height) {
+    constructor(width, height, ws) {
         this.width = width;
         this.height = height;
-        this.snake = snake;
-        this.spawnZerno();
+        this.ws = ws;
         this.initializeGameScene();
-        this.drawScene();
+
     }
 
     initializeGameScene() {
@@ -20,97 +19,42 @@ export class Game {
         }
     }
 
-    drawScene() {
+    drawScene(data) {
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
                 $(`#gameCell${i}${j}`).removeClass('snake-body-fill');
                 $(`#gameCell${i}${j}`).removeClass('zerno');
+                $(`#gameCell${i}${j}`).attr("style", `background-color:#ffffff`)
             }
         }
-        this.snake.body.forEach(element => {
+        data.snakes.forEach((element)=>{
+            if (element != null){
+                this.drawSnake(element);
+            }
+        })
+        if (data.zerno != null) {
+            $(`#gameCell${data.zerno.pos.x}${data.zerno.pos.y}`).addClass('zerno');
+            $(`#gameCell${data.zerno.pos.x}${data.zerno.pos.y}`).attr("style", `background-color:green`)
+        }
+    }
+    drawSnake(snake){
+        snake.body.forEach(element => {
             $(`#gameCell${element.x}${element.y}`).addClass('snake-body-fill');
+            $(`#gameCell${element.x}${element.y}`).attr("style", `background-color:${snake.color}`)
         });
-        if (this.zerno != null) {
-            $(`#gameCell${this.zerno.pos.x}${this.zerno.pos.y}`).addClass('zerno');
-        }
     }
-
-    tick() {
-        let snakeBody = this.snake.body;
-        let lastElement = JSON.parse( JSON.stringify( snakeBody[0]));
-        
-            
-        
-
-        lastElement.x += this.snake.direction.x;
-        lastElement.y += this.snake.direction.y;
-        
-        snakeBody.insert(0, lastElement)
-        
-        if (this.snake.isIn(this.zerno.pos.x, this.zerno.pos.y)){
-            
-            this.zerno=null;
-        }else{
-            snakeBody.splice(-1, 1);
-        }
-        if (this.zerno == null){
-            this.spawnZerno();
-        }
-        this.drawScene();
-    }
+    
     controllerPressed(key) {
         
         if (key != 'w' && key != 'a' && key != 's' && key != 'd') {
             return;
         }
         
+        this.ws.send(JSON.stringify({command : 'pressed', key: key}))
         
-        let pos = this.snake.body[0] ;
-        if (key == 'w') {
-            if (this.snake.isIn(pos.x -1, pos.y)){
-                return ;
-            }
-            this.snake.direction.x = -1;
-            this.snake.direction.y = 0;
-        }
-        if (key == 's') {
-            if (this.snake.isIn(pos.x +1, pos.y)){
-                return ;
-            }
-            this.snake.direction.x = 1;
-            this.snake.direction.y = 0;
-        }
-        if (key == 'a') {
-            if (this.snake.isIn(pos.x, pos.y-1)){
-                return ;
-            }
-            this.snake.direction.y = -1;
-            this.snake.direction.x = 0;
-        }
-        if (key == 'd') {
-            if (this.snake.isIn(pos.x, pos.y+1)){
-                return ;
-            }
-            this.snake.direction.y = 1;
-            this.snake.direction.x = 0;
-        }
     }
 
-    spawnZerno() {
-        let arr = [];
-        for (let i =0;i<this.width;i++){
-            for (let j=0;j<this.height;j++){
-                if (!this.snake.isIn(i,j)){
-                    arr.push({x: i, y: j});
-                }
-            }
-        }
-        arr = shuffle(arr);
-        let selectedIndex = Math.floor(Math.random() * arr.length);
-
-        this.zerno = new Zerno();
-        this.zerno.pos=arr[selectedIndex];
-    }
+    
 
    
 }
