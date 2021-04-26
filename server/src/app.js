@@ -49,28 +49,13 @@ function initializeWeb(){
     var express = require('express')
     var app = express();
 
+    const publicDirectoryPath = __dirname + '/client';
+    app.use(express.static(publicDirectoryPath))
+    
     app.listen(8080, () => {
         console.log("Started")
     })
-    app.get('/', (req, res) => {
-        res.sendFile(__dirname + '/client/index.html');
-
-    })
-
-    app.get('/css/*', (req, res) => {
-
-        let url = req.originalUrl;
-        url.replace('/', '\\');
-        res.sendFile(__dirname + '/client/' + url)
-
-    })
-
-    app.get('/js/*', (req, res) => {
-
-        let url = req.originalUrl;
-        url.replace('/', '\\');
-        res.sendFile(__dirname + '/client/' + url)
-    });
+    
 }
 function main() {
     
