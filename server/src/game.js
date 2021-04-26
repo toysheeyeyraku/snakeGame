@@ -17,8 +17,9 @@ class Game {
     }
     
     createSnake() {
-        let snake = new Snake();
+        let snake = new Snake(this.snakes.length);
         this.snakes.push(snake);
+
     }
 
     tick() {
@@ -51,10 +52,12 @@ class Game {
         snakeBody.insert(0, lastElement)
 
         if (this.zerno != null && snake.isIn(this.zerno.pos.x, this.zerno.pos.y)) {
+            this.emitter.emit("snakeTakeZernoCommand", snake.indx, this);
             this.zerno = null;
         } else {
             snakeBody.splice(-1, 1);
         }
+        
     }
 
     
@@ -120,7 +123,14 @@ class Game {
         this.zerno.pos = arr[selectedIndex];
     }
 
-
+    start(period){
+        this.ticking = setInterval(() => {
+            this.tick();
+        }, period);
+    }
+    stop(){
+        clearInterval(this.ticking);
+    }
 }
 
 module.exports = { Game }

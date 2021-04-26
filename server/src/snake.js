@@ -1,7 +1,8 @@
  class Snake {
 
-    constructor(){
+    constructor(indx){
         this.color = this.getRandomColor();
+        this.indx = indx;
     }
     direction = {
         x: 1,

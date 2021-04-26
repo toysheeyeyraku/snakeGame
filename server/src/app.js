@@ -10,11 +10,10 @@ function initializeGame(){
         this.splice(index, 0, item);
     }
     Array.prototype.insert = insert;
-    game = new Game(30, 30);
+    let emitter = new EventEmitter();
+    game = new Game(30, 30, emitter);
     clientManager = new ClientManager(game);
-    setInterval(() => {
-        game.tick();
-    }, 200);
+    game.start(200);
 
     setInterval(() => {
         clientManager.renderAll();
@@ -28,7 +27,7 @@ function initializeSockets(){
         });
         clientManager.addClient(ws);
 
-        const emitter = new EventEmitter();
+        let emitter = new EventEmitter();
 
         emitter.on('pressed', (data) => {
             let d = JSON.parse(data);
