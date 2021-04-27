@@ -3,6 +3,8 @@ const wss = new WebSocket.Server({ port: 8072 });
 const { Game } = require('./game')
 const { EventEmitter } = require('events');
 const {ClientManager} = require('./clientManager.js');
+const {ScoreManager} = require('./scoreManager.js')
+
 var game;
 var clientManager;
 function initializeGame(){
@@ -11,13 +13,18 @@ function initializeGame(){
     }
     Array.prototype.insert = insert;
     let emitter = new EventEmitter();
-    game = new Game(30, 30, emitter);
-    clientManager = new ClientManager(game);
-    game.start(200);
+    
+    game = new Game(10, 10, emitter);
+    clientManager = new ClientManager(game, new ScoreManager());
+    emitter.on('snakeTakeZernoCommand', (indx) => {
+        clientManager.updateScore(indx, 1);
+        clientManager.updateScoresInClients();
+    })
+    game.start(1000);
 
     setInterval(() => {
         clientManager.renderAll();
-    }, 200);
+    }, 1000);
 }
 
 function initializeSockets(){

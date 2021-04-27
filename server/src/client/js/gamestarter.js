@@ -14,6 +14,7 @@ var color;
 const ws = new WebSocket("ws://localhost:8072");
 ws.addEventListener("message", ({ data }) => {
     let d = JSON.parse(data);
+    console.log(JSON.stringify(data))
     if (d.command === 'initialize'){
         game = new Game(d.width, d.height, ws);
     }
@@ -21,8 +22,15 @@ ws.addEventListener("message", ({ data }) => {
         color = d.color;
     }
     if (d.command ==='render'){
-        console.log(JSON.stringify(d.data))
+        
         game.drawScene(d.data)
+    }
+
+    if (d.command === 'yourId'){
+        game.setId(d.id);
+    }
+    if (d.command === 'scores'){
+        game.changeScores(d.data);
     }
 })
 ws.addEventListener("close", () => {

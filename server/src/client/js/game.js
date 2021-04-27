@@ -2,6 +2,8 @@ import {shuffle} from './utils.js';
 
 export class Game {
 
+    id = null;
+
     constructor(width, height, ws) {
         this.width = width;
         this.height = height;
@@ -54,7 +56,18 @@ export class Game {
         
     }
 
+    setId(id){
+        console.log(id)
+        this.id = id;
+    }
     
+    changeScores(scores){
+        console.log(this.id)
+        if (this.id != null){
+            console.log(JSON.stringify($(`#uiScore`).text()))
+            $(`#uiScore`).text(scores[this.id])
 
+        }
+    }
    
 }

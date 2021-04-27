@@ -59,7 +59,10 @@ class Game {
         }
         
     }
-
+    
+    getSnakeColor(indx){
+        return this.snakes[indx].color;
+    }
     
     controllerPressed(indx, key) {
 
@@ -128,6 +131,7 @@ class Game {
             this.tick();
         }, period);
     }
+
     stop(){
         clearInterval(this.ticking);
     }
