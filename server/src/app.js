@@ -1,9 +1,9 @@
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8072 });
 const { Game } = require('./game')
 const { EventEmitter } = require('events');
 const {ClientManager} = require('./clientManager.js');
 const {ScoreManager} = require('./scoreManager.js')
+var cookieParser = require('cookie-parser')
 
 var game;
 var clientManager;
@@ -47,6 +47,8 @@ function initializeSockets(){
             
         });
     }
+    let webPort = process.env.WEB_PORT || 8072
+    const wss = new WebSocket.Server({ port: webPort });
     wss.on("connection", ws => {
         initializeConnection(ws);
     })
@@ -55,11 +57,29 @@ function initializeSockets(){
 function initializeWeb(){
     var express = require('express')
     var app = express();
-
+    //app.use(express.cookieParser());
     const publicDirectoryPath = __dirname + '/client';
+
+    //Cookie
+    /*app.use(cookieParser())
+    app.get('/', (req, res, next) =>{
+        var cookie = req.cookies.playerId;
+        if (cookie === undefined) {
+            res.cookie('playerId','player1', { maxAge: 900000, httpOnly: true });
+        }
+        next();
+    })*/
+    app.use((req, res, next) => {
+        console.log("GLOVO");
+        next();
+    })
     app.use(express.static(publicDirectoryPath))
     
-    app.listen(8080, () => {
+    let appPort = process.env.APP_PORT || 8080
+
+    console.log(JSON.stringify(process.env))
+    console.log(appPort)
+    app.listen(appPort, () => {
         console.log("Started")
     })
     
