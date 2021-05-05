@@ -5,6 +5,7 @@ const {ClientManager} = require('./clientManager.js');
 const {ScoreManager} = require('./scoreManager.js')
 var cookieParser = require('cookie-parser')
 
+
 var game;
 var clientManager;
 function initializeGame(){
@@ -77,19 +78,32 @@ function initializeWeb(){
     
     let appPort = process.env.APP_PORT || 8080
 
-    console.log(JSON.stringify(process.env))
-    console.log(appPort)
+    
+    
     app.listen(appPort, () => {
         console.log("Started")
     })
     
 }
+function sendInfoAboutServer(){
+    var request = require('request');
+    let appPort = process.env.APP_PORT || 8080
+    let webPort = process.env.WEB_PORT || 8072
+    request({
+        url: "http://" + (process.env.MATCHMAKING_HOST || 'localhost') + ":8011/addServer",
+        method: "POST",
+        json: true,   // <--Very important!!!
+        body: {webPort : webPort, appPort : appPort, width: game.width, height : game.height}
+    }, function (error, response, body){
+        console.log(response);
+    });
+}
 function main() {
     
     initializeGame();
-    initializeSockets();
+    initializeSockets(); 
     initializeWeb();
-
+    sendInfoAboutServer()
 }
 
 module.exports = { main }
