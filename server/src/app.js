@@ -21,6 +21,9 @@ function initializeGame(){
         clientManager.updateScore(indx, 1);
         clientManager.updateScoresInClients();
     })
+    emitter.on(`snakeDied`, (indx) =>{
+        clientManager.snakeDied(indx);
+    })
     game.start(1000);
 
     setInterval(() => {

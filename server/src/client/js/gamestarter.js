@@ -32,6 +32,9 @@ ws.addEventListener("message", ({ data }) => {
     if (d.command === 'scores'){
         game.changeScores(d.data);
     }
+    if (d.command === 'snakeDied'){
+        alert('You losed');
+    }
 })
 ws.addEventListener("close", () => {
     

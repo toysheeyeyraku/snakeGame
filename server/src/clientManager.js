@@ -65,6 +65,10 @@ class ClientManager{
     updateScoresInClients(){
         this.notifyAll({command : 'scores', data : this.scoreManager.getAllScores()})
     }
+
+    snakeDied(indx){
+        this.notify(this.clients[indx], {command : 'snakeDied', data : indx})
+    }
 }
 
 module.exports = {ClientManager}

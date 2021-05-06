@@ -64,7 +64,7 @@ class Game {
         } else {
             snakeBody.splice(-1, 1);
         }
-        
+        this.calcLosing(snake);
     }
     
     getSnakeColor(indx){
@@ -78,6 +78,9 @@ class Game {
             return;
         }
         
+        if (!this.snakes.has(indx)){
+            return;
+        }
 
         let pos = this.snakes.get(indx).body[0];
         if (key == 'w') {
@@ -142,6 +145,14 @@ class Game {
 
     stop(){
         clearInterval(this.ticking);
+    }
+
+    calcLosing(snake){
+        let snakeBody = snake.body;
+        if (snakeBody[0].x < 0 || snakeBody[0].x > this.width || snakeBody[0].y < 0 || snakeBody[0].y > this.height){
+            this.deleteSnake(snake.indx);
+            this.emitter.emit("snakeDied", snake.indx, this)
+        }
     }
 }
 
