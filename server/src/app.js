@@ -28,7 +28,7 @@ function initializeGame(){
 
     setInterval(() => {
         clientManager.renderAll();
-    }, 1000);
+    }, 200);
 }
 
 function initializeSockets(){

@@ -26,19 +26,6 @@
         return val;
     }
 
-    isSelfCollide(){
-        let count =0;
-        this.body.forEach(element =>{
-            
-            if (element.x == x && element.y == y){
-                
-                count++;
-                
-            }
-        })
-        return count > 1;
-    }
-
     getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';

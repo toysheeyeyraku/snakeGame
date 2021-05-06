@@ -26,10 +26,14 @@ class Game {
     }
 
     tick() {
-
+        let notAllowedFields = [];
+        this.snakes.forEach((element) =>{
+            notAllowedFields.push(...element.body)
+        });
+        console.log(JSON.stringify(notAllowedFields))
         this.snakes.forEach(element => {
             if (element != null) {
-                this.calcSnake(element);
+                this.calcSnake(element, notAllowedFields);
             }
         })
         if (this.zerno == null) {
@@ -49,7 +53,8 @@ class Game {
         return data;
         
     }
-    calcSnake(snake) {
+    calcSnake(snake, notAllowedFields) {
+        this.calcLosing(snake, notAllowedFields);
         let snakeBody = snake.body;
         let lastElement = JSON.parse(JSON.stringify(snakeBody[0]));
 
@@ -64,7 +69,7 @@ class Game {
         } else {
             snakeBody.splice(-1, 1);
         }
-        this.calcLosing(snake);
+        
     }
     
     getSnakeColor(indx){
@@ -84,28 +89,28 @@ class Game {
 
         let pos = this.snakes.get(indx).body[0];
         if (key == 'w') {
-            if (this.snakes.get(indx).isIn(pos.x - 1, pos.y)) {
+            if (this.snakes.get(indx).isIn(pos.x - 1, pos.y) && this.snakes.get(indx).direction.x == 1) {
                 return;
             }
             this.snakes.get(indx).direction.x = -1;
             this.snakes.get(indx).direction.y = 0;
         }
         if (key == 's') {
-            if (this.snakes.get(indx).isIn(pos.x + 1, pos.y)) {
+            if (this.snakes.get(indx).isIn(pos.x + 1, pos.y) && this.snakes.get(indx).direction.x == -1) {
                 return;
             }
             this.snakes.get(indx).direction.x = 1;
             this.snakes.get(indx).direction.y = 0;
         }
         if (key == 'a') {
-            if (this.snakes.get(indx).isIn(pos.x, pos.y - 1)) {
+            if (this.snakes.get(indx).isIn(pos.x, pos.y - 1) && this.snakes.get(indx).direction.y == 1) {
                 return;
             }
             this.snakes.get(indx).direction.y = -1;
             this.snakes.get(indx).direction.x = 0;
         }
         if (key == 'd') {
-            if (this.snakes.get(indx).isIn(pos.x, pos.y + 1)) {
+            if (this.snakes.get(indx).isIn(pos.x, pos.y + 1) && this.snakes.get(indx).direction.y == -1) {
                 return;
             }
             this.snakes.get(indx).direction.y = 1;
@@ -147,9 +152,21 @@ class Game {
         clearInterval(this.ticking);
     }
 
-    calcLosing(snake){
+    calcLosing(snake, notAllowedFields){
         let snakeBody = snake.body;
         if (snakeBody[0].x < 0 || snakeBody[0].x > this.width || snakeBody[0].y < 0 || snakeBody[0].y > this.height){
+            this.deleteSnake(snake.indx);
+            this.emitter.emit("snakeDied", snake.indx, this)
+            return;
+        }
+        let count=0;
+        notAllowedFields.forEach((element)=>{
+           if (element.x === snakeBody[0].x && element.y === snakeBody[0].y){
+               count++;
+           }
+        })
+        console.log(count)
+        if (count >1){
             this.deleteSnake(snake.indx);
             this.emitter.emit("snakeDied", snake.indx, this)
         }
