@@ -3,23 +3,26 @@ const { Zerno } = require('./zerno.js');
 const { Snake } = require('./snake.js');
 
 class Game {
-    snakes = [];
+    snakes = new Map();
     constructor(width, height, emitter) {
         this.width = width;
         this.height = height;
         this.emitter = emitter;
         this.spawnZerno();
-
+        this.currentIndex=-1;
     }
-   
+    getNextIndex(){
+        this.currentIndex++;
+        return this.currentIndex;
+    }
     deleteSnake(indx) {
-        this.snakes[indx] = null;
+        this.snakes.delete(indx);
     }
     
     createSnake() {
-        let snake = new Snake(this.snakes.length);
-        this.snakes.push(snake);
-
+        let indx = this.getNextIndex();
+        let snake = new Snake(indx);
+        this.snakes.set(indx, snake);
     }
 
     tick() {
@@ -37,7 +40,11 @@ class Game {
     }
     getData() {
         let data ={};
-        data.snakes = this.snakes;
+        let dataSnakes = [];
+        this.snakes.forEach((element) => {
+            dataSnakes.push(element)
+        })
+        data.snakes = dataSnakes;
         data.zerno = this.zerno;
         return data;
         
@@ -61,7 +68,8 @@ class Game {
     }
     
     getSnakeColor(indx){
-        return this.snakes[indx].color;
+        console.log(indx);
+        return this.snakes.get(indx).color;
     }
     
     controllerPressed(indx, key) {
@@ -71,34 +79,34 @@ class Game {
         }
         
 
-        let pos = this.snakes[indx].body[0];
+        let pos = this.snakes.get(indx).body[0];
         if (key == 'w') {
-            if (this.snakes[indx].isIn(pos.x - 1, pos.y)) {
+            if (this.snakes.get(indx).isIn(pos.x - 1, pos.y)) {
                 return;
             }
-            this.snakes[indx].direction.x = -1;
-            this.snakes[indx].direction.y = 0;
+            this.snakes.get(indx).direction.x = -1;
+            this.snakes.get(indx).direction.y = 0;
         }
         if (key == 's') {
-            if (this.snakes[indx].isIn(pos.x + 1, pos.y)) {
+            if (this.snakes.get(indx).isIn(pos.x + 1, pos.y)) {
                 return;
             }
-            this.snakes[indx].direction.x = 1;
-            this.snakes[indx].direction.y = 0;
+            this.snakes.get(indx).direction.x = 1;
+            this.snakes.get(indx).direction.y = 0;
         }
         if (key == 'a') {
-            if (this.snakes[indx].isIn(pos.x, pos.y - 1)) {
+            if (this.snakes.get(indx).isIn(pos.x, pos.y - 1)) {
                 return;
             }
-            this.snakes[indx].direction.y = -1;
-            this.snakes[indx].direction.x = 0;
+            this.snakes.get(indx).direction.y = -1;
+            this.snakes.get(indx).direction.x = 0;
         }
         if (key == 'd') {
-            if (this.snakes[indx].isIn(pos.x, pos.y + 1)) {
+            if (this.snakes.get(indx).isIn(pos.x, pos.y + 1)) {
                 return;
             }
-            this.snakes[indx].direction.y = 1;
-            this.snakes[indx].direction.x = 0;
+            this.snakes.get(indx).direction.y = 1;
+            this.snakes.get(indx).direction.x = 0;
         }
     }
 
