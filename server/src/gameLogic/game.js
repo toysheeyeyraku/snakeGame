@@ -1,4 +1,4 @@
-const { shuffle } = require('./utils.js');
+const { shuffle } = require('../utils/utils');
 const { Zerno } = require('./zerno.js');
 const { Snake } = require('./snake.js');
 

@@ -1,17 +1,26 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'matchmaking';
+  fullNameControl : FormGroup;
 
   public response : any = [] ;
   constructor(private http: HttpClient){
     this.search();
+    this.fullNameControl = new FormGroup({
+      firstName: new FormControl('',[myV('loler')]),
+      secondName: new FormControl()
+    })
+    this.fullNameControl.valueChanges.subscribe((value) => {console.log(value)})
+    this.fullNameControl.statusChanges.subscribe((status) => {console.log(status)})
+
   }
 
   search(){
@@ -21,4 +30,17 @@ export class AppComponent {
       
     })
   }
+
+  ngOnInit(){
+    
+  }
+
+  
+}
+
+function  myV(nameRe : string) : ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    const forbidden = (control.value) == nameRe;
+    return forbidden ? {forbiddenName: {value: control.value}} : null;
+  };
 }

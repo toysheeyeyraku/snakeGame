@@ -1,5 +1,5 @@
 
-const {Mongo} = require('./mongo/mongo.js')
+const {Mongo} = require('../mongo/mongo')
 
 class ScoreManager {
     scores = []

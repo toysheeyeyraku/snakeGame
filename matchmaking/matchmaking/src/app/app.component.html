@@ -1,3 +1,8 @@
 <ul>
   <li *ngFor="let item of response; let i = index"  ><a href="http://localhost:{{item.appPort}}">Width: {{item.width}} Height: {{item.height}}</a></li>
 </ul>
+
+<div [formGroup]="fullNameControl">
+  <input formControlName="firstName" required>
+  <input formControlName="secondName" required>
+</div>

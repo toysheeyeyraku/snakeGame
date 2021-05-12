@@ -1,8 +1,8 @@
 const WebSocket = require("ws");
-const { Game } = require('./game')
+const { Game } = require('./gameLogic/game')
 const { EventEmitter } = require('events');
-const {ClientManager} = require('./clientManager.js');
-const {ScoreManager} = require('./scoreManager.js')
+const {ClientManager} = require('./netLogic/clientManager.js');
+const {ScoreManager} = require('./netLogic/scoreManager.js')
 var cookieParser = require('cookie-parser')
 
 
